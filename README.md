@@ -27,7 +27,7 @@ npx serverless deploy
 The deploy output will include the API Gateway endpoint, for example:
 
 
-POST - https://w6p9ows306.execute-api.eu-central-1.amazonaws.com/tasks
+POST - https://<id>.execute-api.eu-central-1.amazonaws.com/tasks
 2. High-Level Architecture
 
         +-------------+
