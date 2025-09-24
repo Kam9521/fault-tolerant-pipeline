@@ -75,7 +75,7 @@ Submit a Task (PowerShell)
 Replace <YOUR_ENDPOINT> with the value from deployment (serverless info):
 
 
-$uri = "https://w6p9ows306.execute-api.eu-central-1.amazonaws.com/tasks"
+$uri = "YOUR_ENDPOINT"
 $bodyObj = @{ taskId = "t1"; payload = @{ foo = "bar" } } | ConvertTo-Json -Depth 10
 Invoke-RestMethod -Method Post -Uri $uri -ContentType "application/json" -Body $bodyObj
 
