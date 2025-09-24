@@ -1,0 +1,23 @@
+{
+  "name": "fault-tolerant-pipeline",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "remove": "serverless remove",
+    "deploy": "npm run build && serverless deploy",
+    "info": "serverless info -v",
+    "logs:worker": "serverless logs -f processTask -t",
+    "logs:dlq": "serverless logs -f monitorDlq -t",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@aws-sdk/client-sqs": "^3.616.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.152",
+    "@types/node": "^24.5.2",
+    "serverless": "^3.40.0",
+    "serverless-esbuild": "^1.55.1",
+    "typescript": "^5.4.0"
+  }
+}

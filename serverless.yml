@@ -1,0 +1,58 @@
+service: fault-tolerant-pipeline
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: eu-central-1
+
+  environment:
+    MAIN_QUEUE_URL: !Ref MainQueue
+    DLQ_URL: !Ref DlqQueue
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action: sqs:SendMessage
+          Resource:
+            - !GetAtt MainQueue.Arn
+            - !GetAtt DlqQueue.Arn
+
+plugins:
+  - serverless-esbuild
+
+functions:
+  submitTask:
+    handler: src/submitTask.handler
+    events:
+      - httpApi:
+          method: POST
+          path: /tasks
+
+  processTask:
+    handler: src/processTask.handler
+    events:
+      - sqs:
+          arn: !GetAtt MainQueue.Arn
+          batchSize: 1
+
+  monitorDlq:
+    handler: src/monitorDlq.handler
+    events:
+      - sqs:
+          arn: !GetAtt DlqQueue.Arn
+          batchSize: 1
+
+resources:
+  Resources:
+    DlqQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: fault-pipeline-dlq
+    MainQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: fault-pipeline-queue
+        RedrivePolicy:
+          deadLetterTargetArn: !GetAtt DlqQueue.Arn
+          maxReceiveCount: 3
